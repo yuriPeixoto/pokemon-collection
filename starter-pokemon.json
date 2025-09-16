@@ -1,0 +1,157 @@
+{
+  "regions": {
+    "kanto": {
+      "grass": {
+        "name": "Bulbasaur",
+        "number": 1,
+        "types": ["grass", "poison"]
+      },
+      "fire": {
+        "name": "Charmander", 
+        "number": 4,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Squirtle",
+        "number": 7,
+        "types": ["water"]
+      }
+    },
+    "johto": {
+      "grass": {
+        "name": "Chikorita",
+        "number": 152,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Cyndaquil",
+        "number": 155,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Totodile",
+        "number": 158,
+        "types": ["water"]
+      }
+    },
+    "hoenn": {
+      "grass": {
+        "name": "Treecko",
+        "number": 252,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Torchic",
+        "number": 255,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Mudkip",
+        "number": 258,
+        "types": ["water"]
+      }
+    },
+    "sinnoh": {
+      "grass": {
+        "name": "Turtwig",
+        "number": 387,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Chimchar",
+        "number": 390,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Piplup",
+        "number": 393,
+        "types": ["water"]
+      }
+    },
+    "unova": {
+      "grass": {
+        "name": "Snivy",
+        "number": 495,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Tepig",
+        "number": 498,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Oshawott",
+        "number": 501,
+        "types": ["water"]
+      }
+    },
+    "kalos": {
+      "grass": {
+        "name": "Chespin",
+        "number": 650,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Fennekin",
+        "number": 653,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Froakie",
+        "number": 656,
+        "types": ["water"]
+      }
+    },
+    "alola": {
+      "grass": {
+        "name": "Rowlet",
+        "number": 722,
+        "types": ["grass", "flying"]
+      },
+      "fire": {
+        "name": "Litten",
+        "number": 725,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Popplio",
+        "number": 728,
+        "types": ["water"]
+      }
+    },
+    "galar": {
+      "grass": {
+        "name": "Grookey",
+        "number": 810,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Scorbunny",
+        "number": 813,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Sobble",
+        "number": 816,
+        "types": ["water"]
+      }
+    },
+    "paldea": {
+      "grass": {
+        "name": "Sprigatito",
+        "number": 906,
+        "types": ["grass"]
+      },
+      "fire": {
+        "name": "Fuecoco",
+        "number": 909,
+        "types": ["fire"]
+      },
+      "water": {
+        "name": "Quaxly",
+        "number": 912,
+        "types": ["water"]
+      }
+    }
+  }
+}
