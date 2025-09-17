@@ -56,6 +56,27 @@ class Pokemon extends Model
         'level' => 'decimal:1',
     ];
 
+    // Removido boot() - não funciona automaticamente
+
+    /**
+     * Atualiza os cálculos de IV
+     */
+    public function updateIvCalculations()
+    {
+        // Só calcula se todos os IVs estão preenchidos
+        if ($this->iv_attack !== null && $this->iv_defense !== null && $this->iv_hp !== null) {
+            // Calcula is_perfect_iv
+            $this->is_perfect_iv = ($this->iv_attack === 15 && $this->iv_defense === 15 && $this->iv_hp === 15);
+            
+            // Calcula iv_percentage
+            $this->iv_percentage = round((($this->iv_attack + $this->iv_defense + $this->iv_hp) / 45) * 100, 2);
+        } else {
+            // Se não tem todos os IVs, reseta os valores calculados
+            $this->is_perfect_iv = false;
+            $this->iv_percentage = null;
+        }
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -103,5 +124,26 @@ class Pokemon extends Model
     public function scopeByRegion($query, $region)
     {
         return $query->where('region', $region);
+    }
+
+    public static function getTypeInfo($type)
+    {
+        $types = config('pokemon.types');
+        return $types[$type] ?? [
+            'name' => ucfirst($type),
+            'color' => '#777777',
+            'emoji' => '⚪'
+        ];
+    }
+
+    public function getTypesWithInfoAttribute()
+    {
+        if (!$this->types) {
+            return [];
+        }
+
+        return collect($this->types)->map(function ($type) {
+            return self::getTypeInfo($type);
+        })->toArray();
     }
 }
