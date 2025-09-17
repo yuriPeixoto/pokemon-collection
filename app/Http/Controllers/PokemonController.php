@@ -27,7 +27,7 @@ class PokemonController extends Controller
         }
 
         if ($request->boolean('perfect_iv')) {
-            $query->perfectIv();
+            $query->where('is_perfect_iv', true);
         }
 
         if ($request->boolean('shiny')) {
@@ -46,7 +46,7 @@ class PokemonController extends Controller
             $query->where('is_purified', true);
         }
 
-        $pokemon = $query->orderBy('name')->paginate(20);
+        $pokemon = $query->orderBy('pokedex_number', 'desc')->paginate(20);
 
         return view('pokemon.index', compact('pokemon'));
     }
@@ -66,6 +66,7 @@ class PokemonController extends Controller
             'iv_defense' => 'nullable|integer|min:0|max:15',
             'iv_hp' => 'nullable|integer|min:0|max:15',
             'level' => 'nullable|numeric|min:1|max:50',
+            'is_perfect_iv' => 'boolean',
             'is_shiny' => 'boolean',
             'is_lucky' => 'boolean',
             'is_shadow' => 'boolean',
@@ -87,17 +88,18 @@ class PokemonController extends Controller
             return back()->withErrors(['name' => 'Pokémon não encontrado na PokéAPI.']);
         }
 
-        // Calcular IV percentage
-        if (isset($validated['iv_attack']) && isset($validated['iv_defense']) && isset($validated['iv_hp'])) {
-            $validated['iv_percentage'] = round((($validated['iv_attack'] + $validated['iv_defense'] + $validated['iv_hp']) / 45) * 100, 2);
-            $validated['is_perfect_iv'] = $validated['iv_attack'] === 15 && $validated['iv_defense'] === 15 && $validated['iv_hp'] === 15;
-        }
-
         // Merge dados da API
         $validated = array_merge($validated, $pokemonData);
         $validated['user_id'] = auth()->id();
 
-        Pokemon::create($validated);
+        // Calcular is_perfect_iv ANTES de criar
+        if (isset($validated['iv_attack']) && isset($validated['iv_defense']) && isset($validated['iv_hp'])) {
+            $validated['is_perfect_iv'] = ($validated['iv_attack'] == 15 && $validated['iv_defense'] == 15 && $validated['iv_hp'] == 15);
+            $validated['iv_percentage'] = round((($validated['iv_attack'] + $validated['iv_defense'] + $validated['iv_hp']) / 45) * 100, 2);
+        }
+
+        // Criar o Pokémon
+        $pokemon = Pokemon::create($validated);
 
         return redirect()->route('pokemon.index')->with('success', 'Pokémon adicionado com sucesso!');
     }
@@ -125,6 +127,7 @@ class PokemonController extends Controller
             'iv_defense' => 'nullable|integer|min:0|max:15',
             'iv_hp' => 'nullable|integer|min:0|max:15',
             'level' => 'nullable|numeric|min:1|max:50',
+            'is_perfect_iv' => 'boolean',
             'is_shiny' => 'boolean',
             'is_lucky' => 'boolean',
             'is_shadow' => 'boolean',
@@ -139,13 +142,12 @@ class PokemonController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        // Recalcular IV percentage
-        if (isset($validated['iv_attack']) && isset($validated['iv_defense']) && isset($validated['iv_hp'])) {
-            $validated['iv_percentage'] = round((($validated['iv_attack'] + $validated['iv_defense'] + $validated['iv_hp']) / 45) * 100, 2);
-            $validated['is_perfect_iv'] = $validated['iv_attack'] === 15 && $validated['iv_defense'] === 15 && $validated['iv_hp'] === 15;
-        }
-
+        // Atualizar o Pokémon
         $pokemon->update($validated);
+        
+        // Forçar cálculo dos IVs (fallback caso o boot() não funcione)
+        $pokemon->updateIvCalculations();
+        $pokemon->save();
 
         return redirect()->route('pokemon.show', $pokemon)->with('success', 'Pokémon atualizado com sucesso!');
     }
@@ -225,7 +227,7 @@ class PokemonController extends Controller
                 'name' => ucfirst($data['name']),
                 'pokedex_number' => $data['id'],
                 'types' => collect($data['types'])->pluck('type.name')->toArray(),
-                'sprite_url' => $data['sprites']['front_default'],
+                'sprite_url' => $data['sprites']['other']['official-artwork']['front_default'] ?? $data['sprites']['front_default'],
                 'base_hp' => $data['stats'][0]['base_stat'],
                 'base_attack' => $data['stats'][1]['base_stat'],
                 'base_defense' => $data['stats'][2]['base_stat'],

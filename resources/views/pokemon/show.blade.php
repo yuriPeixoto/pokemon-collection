@@ -1,283 +1,349 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $pokemon->name }}
-                @if($pokemon->is_shiny) ✨ @endif
-                @if($pokemon->is_lucky) 🍀 @endif
-                @if($pokemon->is_perfect_iv) 💯 @endif
-            </h2>
-            <div class="flex space-x-2">
-                <a href="{{ route('pokemon.edit', $pokemon) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <div>
+                <h2 class="font-bold text-2xl text-white leading-tight flex items-center gap-2">
+                    👁️ {{ $pokemon->name }}
+                    @if($pokemon->is_shiny) <span class="badge badge-accent">✨ Shiny</span> @endif
+                    @if($pokemon->is_lucky) <span class="badge badge-success">🍀 Lucky</span> @endif
+                    @if($pokemon->is_perfect_iv) <span class="badge badge-secondary">💯 Perfect</span> @endif
+                </h2>
+                <p class="text-white/80 text-sm mt-1">Detalhes completos do seu Pokémon</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="{{ route('pokemon.edit', $pokemon) }}" class="btn btn-accent">
                     Editar
                 </a>
-                <a href="{{ route('pokemon.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Voltar para Lista
+                <a href="{{ route('pokemon.index') }}" class="btn btn-ghost text-white">
+                    ← Voltar
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Messages -->
-            @if (session('success'))
-                <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
+    <!-- Messages -->
+    @if (session('success'))
+        <div class="alert alert-success shadow-lg mb-6">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
 
-            @if (session('error'))
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
-            @endif
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Imagem e informações básicas -->
-                        <div class="space-y-6">
-                            @if($pokemon->sprite_url)
-                                <div class="flex justify-center">
-                                    <img src="{{ $pokemon->sprite_url }}" alt="{{ $pokemon->name }}" class="w-48 h-48">
-                                </div>
-                            @endif
+    @if (session('error'))
+        <div class="alert alert-error shadow-lg mb-6">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
 
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Informações Básicas</h3>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between">
-                                        <span class="font-medium text-gray-700">Nome:</span>
-                                        <span class="text-gray-900">{{ $pokemon->name }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="font-medium text-gray-700">Número da Pokédex:</span>
-                                        <span class="text-gray-900">#{{ $pokemon->pokedex_number }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="font-medium text-gray-700">Tipos:</span>
-                                        <span class="text-gray-900">{{ $pokemon->types_string }}</span>
-                                    </div>
-                                    @if($pokemon->region)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Região:</span>
-                                            <span class="text-gray-900">{{ $pokemon->region }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->generation)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Geração:</span>
-                                            <span class="text-gray-900">{{ $pokemon->generation }}</span>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <!-- Stats Base -->
-                            <div class="bg-blue-50 rounded-lg p-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Stats Base</h3>
-                                <div class="grid grid-cols-2 gap-2 text-sm">
-                                    @if($pokemon->base_hp)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">HP:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_hp }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->base_attack)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Ataque:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_attack }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->base_defense)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Defesa:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_defense }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->base_special_attack)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Sp. Ataque:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_special_attack }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->base_special_defense)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Sp. Defesa:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_special_defense }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->base_speed)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">Velocidade:</span>
-                                            <span class="text-gray-900">{{ $pokemon->base_speed }}</span>
-                                        </div>
-                                    @endif
-                                </div>
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Informações Básicas e Sprite -->
+        <div class="xl:col-span-1">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    @if($pokemon->sprite_url)
+                        <div class="avatar mb-6">
+                            <div class="w-48 h-48 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
+                                <img src="{{ $pokemon->sprite_url }}" alt="{{ $pokemon->name }}" class="w-full h-full object-contain">
                             </div>
                         </div>
+                    @endif
 
-                        <!-- Dados do Pokémon GO -->
-                        <div class="space-y-6">
-                            <!-- Stats Pokémon GO -->
-                            <div class="bg-green-50 rounded-lg p-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Stats Pokémon GO</h3>
-                                <div class="space-y-2">
-                                    @if($pokemon->cp)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">CP:</span>
-                                            <span class="text-gray-900 font-bold text-lg">{{ $pokemon->cp }}</span>
-                                        </div>
-                                    @endif
-                                    @if($pokemon->hp)
-                                        <div class="flex justify-between">
-                                            <span class="font-medium text-gray-700">HP:</span>
-                                            <span class="text-gray-900 font-bold">{{ $pokemon->hp }}</span>
-                                        </div>
-                                    @endif
+                    <div class="card-title text-3xl">{{ $pokemon->name }}</div>
+                    <div class="badge badge-primary badge-lg mb-4">#{{ $pokemon->pokedex_number }}</div>
+
+                    <!-- Badges especiais -->
+                    <div class="flex flex-wrap gap-2 justify-center mb-4">
+                        @if($pokemon->is_shiny)
+                            <div class="badge badge-accent">✨ Shiny</div>
+                        @endif
+                        @if($pokemon->is_lucky)
+                            <div class="badge badge-success">🍀 Lucky</div>
+                        @endif
+                        @if($pokemon->is_perfect_iv)
+                            <div class="badge badge-secondary">💯 Perfect IV</div>
+                        @endif
+                        @if($pokemon->is_shadow)
+                            <div class="badge badge-neutral">🌑 Shadow</div>
+                        @endif
+                        @if($pokemon->is_purified)
+                            <div class="badge badge-primary">✨ Purified</div>
+                        @endif
+                        @if($pokemon->is_buddy)
+                            <div class="badge badge-info">👥 Companheiro</div>
+                        @endif
+                    </div>
+
+                    <!-- Tipos -->
+                    <div class="flex gap-2 justify-center">
+                        @if($pokemon->types)
+                            @foreach($pokemon->types as $type)
+                                @php
+                                    $typeInfo = \App\Models\Pokemon::getTypeInfo($type);
+                                @endphp
+                                <div class="badge badge-lg text-white" style="background-color: {{ $typeInfo['color'] }}">
+                                    {{ $typeInfo['emoji'] }} {{ $typeInfo['name'] }}
                                 </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações da PokéAPI -->
+            <div class="card bg-gradient-to-r from-primary/10 to-secondary/10 shadow-xl mt-6">
+                <div class="card-body">
+                    <h3 class="card-title">📊 Dados da PokéAPI</h3>
+                    <div class="space-y-3">
+                        @if($pokemon->region)
+                            <div class="flex justify-between">
+                                <span class="font-medium">🗺️ Região:</span>
+                                <span class="badge badge-outline">{{ $pokemon->region }}</span>
                             </div>
-
-                            <!-- IVs -->
-                            @if($pokemon->iv_attack !== null || $pokemon->iv_defense !== null || $pokemon->iv_hp !== null)
-                                <div class="bg-purple-50 rounded-lg p-4">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Individual Values (IVs)</h3>
-                                    <div class="space-y-2">
-                                        <div class="grid grid-cols-3 gap-4 text-center">
-                                            <div>
-                                                <div class="text-2xl font-bold text-red-500">{{ $pokemon->iv_attack ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-600">Ataque</div>
-                                            </div>
-                                            <div>
-                                                <div class="text-2xl font-bold text-blue-500">{{ $pokemon->iv_defense ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-600">Defesa</div>
-                                            </div>
-                                            <div>
-                                                <div class="text-2xl font-bold text-green-500">{{ $pokemon->iv_hp ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-600">HP</div>
-                                            </div>
-                                        </div>
-                                        @if($pokemon->iv_percentage)
-                                            <div class="text-center mt-3">
-                                                <div class="text-3xl font-bold {{ $pokemon->is_perfect_iv ? 'text-purple-600' : 'text-gray-800' }}">
-                                                    {{ $pokemon->iv_percentage }}%
-                                                    @if($pokemon->is_perfect_iv) 💯 @endif
-                                                </div>
-                                                <div class="text-sm text-gray-600">IV Total</div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-
-                            <!-- Características Especiais -->
-                            <div class="bg-yellow-50 rounded-lg p-4">
-                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Características Especiais</h3>
-                                <div class="flex flex-wrap gap-2">
-                                    @if($pokemon->is_shiny)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                                            ✨ Shiny
-                                        </span>
-                                    @endif
-                                    @if($pokemon->is_lucky)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                            🍀 Lucky
-                                        </span>
-                                    @endif
-                                    @if($pokemon->is_shadow)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                                            🌑 Shadow
-                                        </span>
-                                    @endif
-                                    @if($pokemon->is_purified)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                            🕊️ Purified
-                                        </span>
-                                    @endif
-                                    @if($pokemon->is_perfect_iv)
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                                            💯 Perfect IV
-                                        </span>
-                                    @endif
-                                    @if(!$pokemon->is_shiny && !$pokemon->is_lucky && !$pokemon->is_shadow && !$pokemon->is_purified && !$pokemon->is_perfect_iv)
-                                        <span class="text-gray-500 text-sm">Nenhuma característica especial</span>
-                                    @endif
-                                </div>
+                        @endif
+                        @if($pokemon->generation)
+                            <div class="flex justify-between">
+                                <span class="font-medium">📊 Geração:</span>
+                                <span class="badge badge-outline">{{ $pokemon->generation }}</span>
                             </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                            <!-- Ataques -->
-                            @if($pokemon->fast_move || $pokemon->charge_move_1 || $pokemon->charge_move_2)
-                                <div class="bg-red-50 rounded-lg p-4">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Ataques</h3>
-                                    <div class="space-y-2">
-                                        @if($pokemon->fast_move)
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-700">Ataque Rápido:</span>
-                                                <span class="text-gray-900">{{ $pokemon->fast_move }}</span>
-                                            </div>
-                                        @endif
-                                        @if($pokemon->charge_move_1)
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-700">Ataque Carregado 1:</span>
-                                                <span class="text-gray-900">{{ $pokemon->charge_move_1 }}</span>
-                                            </div>
-                                        @endif
-                                        @if($pokemon->charge_move_2)
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-700">Ataque Carregado 2:</span>
-                                                <span class="text-gray-900">{{ $pokemon->charge_move_2 }}</span>
-                                            </div>
-                                        @endif
+        <!-- Stats e Informações do GO -->
+        <div class="xl:col-span-2 space-y-6">
+            <!-- Stats do Pokémon GO -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-xl mb-4">⚔️ Stats do Pokémon GO</h3>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-figure text-primary">
+                                <span class="text-2xl">💪</span>
+                            </div>
+                            <div class="stat-title">CP</div>
+                            <div class="stat-value text-primary">{{ $pokemon->cp ?? 'N/A' }}</div>
+                        </div>
+                        
+                        <div class="stat bg-base-200 rounded-lg">
+                            <div class="stat-figure text-error">
+                                <span class="text-2xl">❤️</span>
+                            </div>
+                            <div class="stat-title">HP</div>
+                            <div class="stat-value text-error">{{ $pokemon->hp ?? 'N/A' }}</div>
+                        </div>
+                        
+                        @if($pokemon->level)
+                            <div class="stat bg-base-200 rounded-lg">
+                                <div class="stat-figure text-accent">
+                                    <span class="text-2xl">📈</span>
+                                </div>
+                                <div class="stat-title">Nível</div>
+                                <div class="stat-value text-accent">{{ $pokemon->level }}</div>
+                            </div>
+                        @endif
+                        
+                        @if($pokemon->iv_percentage)
+                            <div class="stat bg-base-200 rounded-lg">
+                                <div class="stat-figure {{ $pokemon->is_perfect_iv ? 'text-secondary' : 'text-info' }}">
+                                    <span class="text-2xl">📊</span>
+                                </div>
+                                <div class="stat-title">IV Total</div>
+                                <div class="stat-value {{ $pokemon->is_perfect_iv ? 'text-secondary' : 'text-info' }}">{{ $pokemon->iv_percentage }}%</div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- IVs Detalhados -->
+                    @if($pokemon->iv_attack !== null || $pokemon->iv_defense !== null || $pokemon->iv_hp !== null)
+                        <div class="divider">📊 IVs Individuais</div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl">⚔️</div>
+                                <div class="font-bold text-lg">{{ $pokemon->iv_attack ?? 'N/A' }}</div>
+                                <div class="text-sm opacity-70">Ataque</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl">🛡️</div>
+                                <div class="font-bold text-lg">{{ $pokemon->iv_defense ?? 'N/A' }}</div>
+                                <div class="text-sm opacity-70">Defesa</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl">❤️</div>
+                                <div class="font-bold text-lg">{{ $pokemon->iv_hp ?? 'N/A' }}</div>
+                                <div class="text-sm opacity-70">HP</div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Stats Base -->
+            @if($pokemon->base_hp || $pokemon->base_attack || $pokemon->base_defense)
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">📈 Stats Base (PokéAPI)</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            @if($pokemon->base_hp)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">❤️ HP</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_hp }}</div>
+                                </div>
+                            @endif
+                            @if($pokemon->base_attack)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">⚔️ Ataque</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_attack }}</div>
+                                </div>
+                            @endif
+                            @if($pokemon->base_defense)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">🛡️ Defesa</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_defense }}</div>
+                                </div>
+                            @endif
+                            @if($pokemon->base_special_attack)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">⚡ Sp. Ataque</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_special_attack }}</div>
+                                </div>
+                            @endif
+                            @if($pokemon->base_special_defense)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">🔰 Sp. Defesa</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_special_defense }}</div>
+                                </div>
+                            @endif
+                            @if($pokemon->base_speed)
+                                <div class="stat bg-base-200 rounded-lg">
+                                    <div class="stat-title">💨 Velocidade</div>
+                                    <div class="stat-value text-lg">{{ $pokemon->base_speed }}</div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Ataques -->
+            @if($pokemon->fast_move || $pokemon->charge_move_1 || $pokemon->charge_move_2)
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">⚡ Ataques</h3>
+                        <div class="space-y-4">
+                            @if($pokemon->fast_move)
+                                <div class="flex items-center gap-4 p-3 bg-base-200 rounded-lg">
+                                    <div class="text-2xl">⚡</div>
+                                    <div>
+                                        <div class="font-bold">Ataque Rápido</div>
+                                        <div class="text-primary">{{ $pokemon->fast_move }}</div>
                                     </div>
                                 </div>
                             @endif
-
-                            <!-- Informações de Captura -->
-                            @if($pokemon->caught_at || $pokemon->location_caught)
-                                <div class="bg-indigo-50 rounded-lg p-4">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Informações de Captura</h3>
-                                    <div class="space-y-2">
-                                        @if($pokemon->caught_at)
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-700">Data de Captura:</span>
-                                                <span class="text-gray-900">{{ $pokemon->caught_at->format('d/m/Y') }}</span>
-                                            </div>
-                                        @endif
-                                        @if($pokemon->location_caught)
-                                            <div class="flex justify-between">
-                                                <span class="font-medium text-gray-700">Local:</span>
-                                                <span class="text-gray-900">{{ $pokemon->location_caught }}</span>
-                                            </div>
-                                        @endif
+                            @if($pokemon->charge_move_1)
+                                <div class="flex items-center gap-4 p-3 bg-base-200 rounded-lg">
+                                    <div class="text-2xl">💥</div>
+                                    <div>
+                                        <div class="font-bold">Ataque Carregado 1</div>
+                                        <div class="text-secondary">{{ $pokemon->charge_move_1 }}</div>
                                     </div>
                                 </div>
                             @endif
+                            @if($pokemon->charge_move_2)
+                                <div class="flex items-center gap-4 p-3 bg-base-200 rounded-lg">
+                                    <div class="text-2xl">⚡</div>
+                                    <div>
+                                        <div class="font-bold">Ataque Carregado 2</div>
+                                        <div class="text-accent">{{ $pokemon->charge_move_2 }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-                            <!-- Notas -->
+            <!-- Informações de Captura -->
+            @if($pokemon->caught_at || $pokemon->location_caught || $pokemon->notes)
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl mb-4">📋 Informações de Captura</h3>
+                        <div class="space-y-4">
+                            @if($pokemon->caught_at)
+                                <div class="flex items-center gap-4">
+                                    <span class="text-2xl">📅</span>
+                                    <div>
+                                        <div class="font-medium">Data de Captura</div>
+                                        <div class="text-base-content/70">{{ $pokemon->caught_at->format('d/m/Y') }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if($pokemon->location_caught)
+                                <div class="flex items-center gap-4">
+                                    <span class="text-2xl">📍</span>
+                                    <div>
+                                        <div class="font-medium">Local de Captura</div>
+                                        <div class="text-base-content/70">{{ $pokemon->location_caught }}</div>
+                                    </div>
+                                </div>
+                            @endif
+                            @if($pokemon->buddy_level)
+                                <div class="flex items-center gap-4">
+                                    <span class="text-2xl">💎</span>
+                                    <div>
+                                        <div class="font-medium">Nível de Companheiro</div>
+                                        <div class="badge badge-info">
+                                            @switch($pokemon->buddy_level)
+                                                @case('good') 🥉 Good Buddy @break
+                                                @case('great') 🥈 Great Buddy @break
+                                                @case('ultra') 🥇 Ultra Buddy @break
+                                                @case('best') 💎 Best Buddy @break
+                                                @default {{ ucfirst($pokemon->buddy_level) }}
+                                            @endswitch
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             @if($pokemon->notes)
-                                <div class="bg-gray-50 rounded-lg p-4">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Notas</h3>
-                                    <p class="text-gray-700 whitespace-pre-wrap">{{ $pokemon->notes }}</p>
+                                <div class="flex gap-4">
+                                    <span class="text-2xl">📝</span>
+                                    <div class="flex-1">
+                                        <div class="font-medium mb-2">Notas</div>
+                                        <div class="p-3 bg-base-200 rounded-lg text-base-content/80">
+                                            {{ $pokemon->notes }}
+                                        </div>
+                                    </div>
                                 </div>
                             @endif
                         </div>
                     </div>
-
-                    <!-- Ações -->
-                    <div class="mt-8 flex justify-end space-x-3 border-t pt-6">
-                        <form action="{{ route('pokemon.destroy', $pokemon) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                                    onclick="return confirm('Tem certeza que deseja remover este Pokémon da sua coleção?')">
-                                Excluir Pokémon
-                            </button>
-                        </form>
-                        <a href="{{ route('pokemon.edit', $pokemon) }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                            Editar Pokémon
-                        </a>
-                    </div>
                 </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="card bg-base-100 shadow-xl mt-6">
+        <div class="card-body">
+            <div class="card-actions justify-center gap-4">
+                <a href="{{ route('pokemon.edit', $pokemon) }}" class="btn btn-primary btn-lg">
+                    Editar Pokémon
+                </a>
+                <form action="{{ route('pokemon.destroy', $pokemon) }}" method="POST" class="inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-outline btn-error btn-lg"
+                            onclick="return confirm('Tem certeza que deseja remover {{ $pokemon->name }} da sua coleção? Esta ação não pode ser desfeita.')">
+                        Remover da Coleção
+                    </button>
+                </form>
             </div>
         </div>
     </div>
