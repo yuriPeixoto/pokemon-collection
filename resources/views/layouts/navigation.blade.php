@@ -34,6 +34,9 @@
                     </div>
                     <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
                         <li><a href="{{ route('profile.edit') }}">⚙️ Perfil</a></li>
+                        @role('super-admin')
+                            <li><a href="{{ route('admin.dashboard') }}">🛡️ Painel Admin</a></li>
+                        @endrole
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

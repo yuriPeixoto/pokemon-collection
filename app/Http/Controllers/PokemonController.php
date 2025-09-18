@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pokemon;
+use App\Models\FastMove;
+use App\Models\ChargeMove;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
@@ -53,7 +55,10 @@ class PokemonController extends Controller
 
     public function create()
     {
-        return view('pokemon.create');
+        $fastMoves = FastMove::orderBy('name')->get();
+        $chargeMoves = ChargeMove::orderBy('name')->get();
+
+        return view('pokemon.create', compact('fastMoves', 'chargeMoves'));
     }
 
     public function store(Request $request)
@@ -76,6 +81,9 @@ class PokemonController extends Controller
             'fast_move' => 'nullable|string|max:255',
             'charge_move_1' => 'nullable|string|max:255',
             'charge_move_2' => 'nullable|string|max:255',
+            'fast_move_id' => 'nullable|exists:fast_moves,id',
+            'charge_move_1_id' => 'nullable|exists:charge_moves,id',
+            'charge_move_2_id' => 'nullable|exists:charge_moves,id',
             'caught_at' => 'nullable|date',
             'location_caught' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
@@ -113,7 +121,11 @@ class PokemonController extends Controller
     public function edit(Pokemon $pokemon)
     {
         $this->authorize('update', $pokemon);
-        return view('pokemon.edit', compact('pokemon'));
+
+        $fastMoves = FastMove::orderBy('name')->get();
+        $chargeMoves = ChargeMove::orderBy('name')->get();
+
+        return view('pokemon.edit', compact('pokemon', 'fastMoves', 'chargeMoves'));
     }
 
     public function update(Request $request, Pokemon $pokemon)
@@ -137,6 +149,9 @@ class PokemonController extends Controller
             'fast_move' => 'nullable|string|max:255',
             'charge_move_1' => 'nullable|string|max:255',
             'charge_move_2' => 'nullable|string|max:255',
+            'fast_move_id' => 'nullable|exists:fast_moves,id',
+            'charge_move_1_id' => 'nullable|exists:charge_moves,id',
+            'charge_move_2_id' => 'nullable|exists:charge_moves,id',
             'caught_at' => 'nullable|date',
             'location_caught' => 'nullable|string|max:255',
             'notes' => 'nullable|string',

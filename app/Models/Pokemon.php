@@ -38,6 +38,9 @@ class Pokemon extends Model
         'fast_move',
         'charge_move_1',
         'charge_move_2',
+        'fast_move_id',
+        'charge_move_1_id',
+        'charge_move_2_id',
         'caught_at',
         'location_caught',
         'notes',
@@ -80,6 +83,21 @@ class Pokemon extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function fastMove(): BelongsTo
+    {
+        return $this->belongsTo(FastMove::class, 'fast_move_id');
+    }
+
+    public function chargeMove1(): BelongsTo
+    {
+        return $this->belongsTo(ChargeMove::class, 'charge_move_1_id');
+    }
+
+    public function chargeMove2(): BelongsTo
+    {
+        return $this->belongsTo(ChargeMove::class, 'charge_move_2_id');
     }
 
     public function getTypesStringAttribute(): string
