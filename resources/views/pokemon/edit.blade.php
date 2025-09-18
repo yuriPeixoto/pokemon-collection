@@ -240,9 +240,16 @@
                         <label class="label">
                             <span class="label-text font-medium">⚡ Ataque Rápido</span>
                         </label>
-                        <input type="text" name="fast_move" value="{{ old('fast_move', $pokemon->fast_move) }}" 
-                               placeholder="Ex: Thunder Shock" class="input input-bordered input-primary">
-                        @error('fast_move')
+                        <select name="fast_move_id" class="select select-bordered select-primary">
+                            <option value="">Selecione um ataque rápido</option>
+                            @foreach($fastMoves as $move)
+                                <option value="{{ $move->id }}" {{ old('fast_move_id', $pokemon->fast_move_id) == $move->id ? 'selected' : '' }}>
+                                    {{ $move->display_name }} ({{ $move->type }}) - {{ $move->power }} poder
+                                </option>
+                            @endforeach
+                        </select>
+                        <input type="hidden" name="fast_move" value="{{ old('fast_move', $pokemon->fast_move) }}">
+                        @error('fast_move_id')
                             <label class="label">
                                 <span class="label-text-alt text-error">{{ $message }}</span>
                             </label>
@@ -254,9 +261,16 @@
                             <label class="label">
                                 <span class="label-text font-medium">💥 Ataque Carregado 1</span>
                             </label>
-                            <input type="text" name="charge_move_1" value="{{ old('charge_move_1', $pokemon->charge_move_1) }}" 
-                                   placeholder="Ex: Thunderbolt" class="input input-bordered input-primary">
-                            @error('charge_move_1')
+                            <select name="charge_move_1_id" class="select select-bordered select-primary">
+                                <option value="">Selecione um ataque carregado</option>
+                                @foreach($chargeMoves as $move)
+                                    <option value="{{ $move->id }}" {{ old('charge_move_1_id', $pokemon->charge_move_1_id) == $move->id ? 'selected' : '' }}>
+                                        {{ $move->display_name }} ({{ $move->type }}) - {{ $move->power }} poder - {{ $move->bars_text }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <input type="hidden" name="charge_move_1" value="{{ old('charge_move_1', $pokemon->charge_move_1) }}">
+                            @error('charge_move_1_id')
                                 <label class="label">
                                     <span class="label-text-alt text-error">{{ $message }}</span>
                                 </label>
@@ -267,9 +281,16 @@
                             <label class="label">
                                 <span class="label-text font-medium">⚡ Ataque Carregado 2</span>
                             </label>
-                            <input type="text" name="charge_move_2" value="{{ old('charge_move_2', $pokemon->charge_move_2) }}" 
-                                   placeholder="Ex: Wild Charge" class="input input-bordered input-primary">
-                            @error('charge_move_2')
+                            <select name="charge_move_2_id" class="select select-bordered select-primary">
+                                <option value="">Selecione um ataque carregado</option>
+                                @foreach($chargeMoves as $move)
+                                    <option value="{{ $move->id }}" {{ old('charge_move_2_id', $pokemon->charge_move_2_id) == $move->id ? 'selected' : '' }}>
+                                        {{ $move->display_name }} ({{ $move->type }}) - {{ $move->power }} poder - {{ $move->bars_text }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <input type="hidden" name="charge_move_2" value="{{ old('charge_move_2', $pokemon->charge_move_2) }}">
+                            @error('charge_move_2_id')
                                 <label class="label">
                                     <span class="label-text-alt text-error">{{ $message }}</span>
                                 </label>
